@@ -13,7 +13,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.springframework-version>4.2.0.RELEASE</org.springframework-version>
         <dubbo.version>2.5.3</dubbo.version>
-        <zookeeper.version>3.4.6</zookeeper.version>
         <zkClient.version>0.3</zkClient.version>
         <log4j.version>2.3</log4j.version>
         <jackson.version>2.5.4</jackson.version>
@@ -33,17 +32,32 @@
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>dubbo</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>spring</artifactId>
+                        <groupId>org.springframework</groupId>
+                    </exclusion>
+                </exclusions>
                 <version>${dubbo.version}</version>
             </dependency>
             <!-- Zookeeper 用于分布式服务管理 -->
             <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>${zookeeper.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>com.101tec</groupId>
                 <artifactId>zkclient</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-api</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>log4j</artifactId>
+                        <groupId>log4j</groupId>
+                    </exclusion>
+                </exclusions>
                 <version>${zkClient.version}</version>
             </dependency>
             <!-- Zookeeper 用于分布式服务管理 end -->
@@ -107,7 +121,25 @@
                 <version>1.0.15</version>
             </dependency>
 
-            <!-- log4j2 -->
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.25</version>
+            </dependency>
+            <!-- slf4j 到 log4j2 的桥接器 -->
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>2.3</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-api</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <!-- log4j2 实现-->
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
@@ -124,10 +156,17 @@
                 <version>${log4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-jcl</artifactId>
-                <version>${log4j.version}</version>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>3.3.7</version>
             </dependency>
+            <!-- log4j 到 slf4j 适配器 -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>1.7.25</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>

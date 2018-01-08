@@ -1,5 +1,4 @@
 # dubbo-demo2
-dubbo-demo2
 
 ```
 以最简单的方式编写了 dubbo 的示例
