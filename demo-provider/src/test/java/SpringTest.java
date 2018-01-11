@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -26,6 +27,15 @@ public class SpringTest {
     public void test1(){
         User a = userService.findByName("a");
         System.out.println(a);
+    }
+
+    @Test
+    public void test2(){
+        double k = 3;
+        for (int i = 0; i < 10000000; i++) {
+            k = Math.sqrt(3 + Math.sqrt(k));
+        }
+        System.out.println(k);
     }
 
 

@@ -25,13 +25,13 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>dubbo</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
+        <!-- Zookeeper 用于分布式服务管理 -->
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+        </dependency>
+        <!-- Zookeeper 用于分布式服务管理 end -->
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -75,6 +75,14 @@
 
         <!-- log4j 的 jar 包 -->
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
         </dependency>
@@ -87,21 +95,14 @@
             <artifactId>log4j-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jcl</artifactId>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
         </dependency>
 
-
-        <!-- Zookeeper 用于分布式服务管理 -->
         <dependency>
-            <groupId>org.apache.zookeeper</groupId>
-            <artifactId>zookeeper</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.101tec</groupId>
-            <artifactId>zkclient</artifactId>
-        </dependency>
-        <!-- Zookeeper 用于分布式服务管理 end -->
 
     </dependencies>
 
@@ -119,7 +120,6 @@
                     <include>**/*.properties</include>
                 </includes>
             </resource>
-            <!-- 结合com.alibaba.dubbo.container.Main -->
             <resource>
                 <targetPath>${project.build.directory}/classes/META-INF/spring</targetPath>
                 <directory>src/main/resources/spring</directory>
@@ -131,7 +131,67 @@
         </resources>
 
         <plugins>
-            <!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <!-- 打成jar包 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.1</version>
+                <configuration>
+                    <!-- 是否生成缩减的pom文件，默认不配置是true -->
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <!-- 启动类 -->
+                                    <mainClass>com.alibaba.dubbo.container.Main</mainClass>
+                                </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.handlers</resource>
+                                </transformer>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/spring.schemas</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <!--<resources>
+            <resource>
+                <targetPath>${project.build.directory}/classes</targetPath>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+            &lt;!&ndash; 结合com.alibaba.dubbo.container.Main &ndash;&gt;
+
+        </resources>
+
+        <plugins>
+            &lt;!&ndash; 打包jar文件时，配置manifest文件，加入lib包的jar依赖 &ndash;&gt;
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -141,7 +201,7 @@
                     <archive>
                         <manifest>
                             <mainClass>com.alibaba.dubbo.container.Main</mainClass>
-                            <!-- 打包时 MANIFEST.MF文件不记录的时间戳版本 -->
+                            &lt;!&ndash; 打包时 MANIFEST.MF文件不记录的时间戳版本 &ndash;&gt;
                             <useUniqueVersions>false</useUniqueVersions>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
@@ -175,7 +235,7 @@
             </plugin>
 
             <plugin>
-                <!-- JDK插件 -->
+                &lt;!&ndash; JDK插件 &ndash;&gt;
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
@@ -184,7 +244,9 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-        </plugins>
+        </plugins>-->
+
+
 
     </build>
 </project>
