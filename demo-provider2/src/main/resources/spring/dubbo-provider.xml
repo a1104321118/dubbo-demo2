@@ -17,5 +17,6 @@
 
 	<!-- 用户服务接口 -->
 	<dubbo:service protocol="dubbo" interface="com.hr.api.api.UserApi" ref="userService" />
+	<dubbo:service protocol="dubbo" interface="com.hr.api.api.TimeOutApi" ref="timeOutService" />
 
 </beans>  
